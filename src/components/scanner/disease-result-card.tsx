@@ -1,16 +1,17 @@
 import { Badge } from "@/components/ui/badge";
+import { ConfidenceBar } from "@/components/scanner/confidence-bar";
 
 export function DiseaseResultCard() {
   return (
     <div className="mt-6 rounded-xl border bg-white p-6 shadow">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold text-green-950">AI Diagnosis Result</h2>
-        <Badge>Demo Result</Badge>
+        <Badge className="bg-orange-500 text-white">Medium Severity</Badge>
       </div>
 
       <p><strong>Disease:</strong> Leaf Blight</p>
-      <p><strong>Confidence:</strong> 92%</p>
-      <p><strong>Severity:</strong> Medium</p>
+
+      <ConfidenceBar />
 
       <div className="mt-4 rounded-lg bg-green-50 p-4">
         <strong>Recommendation:</strong>

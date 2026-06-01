@@ -15,3 +15,13 @@ model User {
   district  String?
   createdAt DateTime @default(now())
 }
+
+model Diagnosis {
+  id          String   @id @default(cuid())
+  diseaseName String
+  confidence  Int
+  severity    String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}
+

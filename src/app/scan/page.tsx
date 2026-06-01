@@ -6,13 +6,25 @@ import { DiseaseResultCard } from "@/components/scanner/disease-result-card";
 export default function ScanPage() {
   const [image, setImage] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const saveDiagnosis = async () => {
+    setSaving(true);
+
+    await fetch("/api/diagnoses", {
+      method: "POST",
+    });
+
+    setSaving(false);
+  };
+
+  const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file) {
       setImage(URL.createObjectURL(file));
       setShowResult(true);
+      await saveDiagnosis();
     }
   };
 
@@ -31,6 +43,12 @@ export default function ScanPage() {
             alt="Leaf Preview"
             className="mt-4 max-w-md rounded-lg border"
           />
+        )}
+
+        {saving && (
+          <p className="mt-3 text-sm text-green-700">
+            Saving diagnosis to database...
+          </p>
         )}
       </div>
 
