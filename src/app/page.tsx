@@ -1,7 +1,22 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 
 export default function Home() {
+  const [userName, setUserName] = useState("Farmer");
+
+  useEffect(() => {
+    const userCookie = Cookies.get("agriguard_user");
+
+    if (userCookie) {
+      const user = JSON.parse(userCookie);
+      setUserName(user.name || "Farmer");
+    }
+  }, []);
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -10,9 +25,13 @@ export default function Home() {
         <Topbar />
 
         <div className="p-6">
-          <h1 className="mb-6 text-3xl font-bold text-green-950">
+          <h1 className="mb-2 text-3xl font-bold text-green-950">
             🌿 AgriGuard AI Dashboard
           </h1>
+
+          <p className="mb-6 text-lg text-green-700">
+            Welcome back, {userName} 👨‍🌾
+          </p>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl bg-white p-6 shadow">

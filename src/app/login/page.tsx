@@ -1,9 +1,11 @@
 "use client";
-
+import Cookies from "js-cookie";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,8 +23,9 @@ export default function LoginPage() {
     const data = await res.json();
 
     if (res.ok) {
-      setMessage("Login successful!");
-    } else {
+  Cookies.set("agriguard_user", JSON.stringify(data.user), { expires: 7 });
+  router.push("/");
+} else {
       setMessage(data.message || "Login failed");
     }
   }
