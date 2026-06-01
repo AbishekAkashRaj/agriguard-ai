@@ -9,8 +9,9 @@ datasource db {
 model User {
   id        String   @id @default(cuid())
   name      String?
-  email     String?  @unique
+  email     String   @unique
   phone     String?
+  password  String
   role      String   @default("farmer")
   district  String?
   createdAt DateTime @default(now())

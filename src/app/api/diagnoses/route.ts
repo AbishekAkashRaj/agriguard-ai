@@ -1,6 +1,30 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
+export async function GET() {
+  try {
+    const diagnoses = await prisma.diagnosis.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      diagnoses,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to fetch diagnoses",
+        error: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST() {
   try {
     const diagnosis = await prisma.diagnosis.create({
@@ -17,8 +41,6 @@ export async function POST() {
       diagnosis,
     });
   } catch (error) {
-    console.error("DIAGNOSIS_SAVE_ERROR:", error);
-
     return NextResponse.json(
       {
         success: false,
@@ -28,10 +50,4 @@ export async function POST() {
       { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  return NextResponse.json({
-    message: "Diagnosis API is working. Use POST to save data.",
-  });
 }
