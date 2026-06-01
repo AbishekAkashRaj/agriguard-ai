@@ -1,6 +1,17 @@
-import { Bell, Leaf } from "lucide-react";
+"use client";
+
+import { Bell, Leaf, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export function Topbar() {
+  const router = useRouter();
+
+  function handleLogout() {
+    Cookies.remove("agriguard_user");
+    router.push("/login");
+  }
+
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
       <div>
@@ -21,6 +32,14 @@ export function Topbar() {
           <Leaf className="h-4 w-4" />
           Farmer Mode
         </div>
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded-full bg-red-50 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-100"
+        >
+          <LogOut className="h-4 w-4" />
+          Logout
+        </button>
       </div>
     </header>
   );
