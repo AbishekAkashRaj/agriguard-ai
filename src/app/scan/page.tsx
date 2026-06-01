@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ProtectedRoute from "@/components/auth/protected-route";
 import { DiseaseResultCard } from "@/components/scanner/disease-result-card";
 
 export default function ScanPage() {
@@ -29,30 +30,32 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="min-h-screen bg-green-50 p-8">
-      <h1 className="mb-6 text-3xl font-bold text-green-900">
-        🌿 Disease Scanner
-      </h1>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-green-50 p-8">
+        <h1 className="mb-6 text-3xl font-bold text-green-900">
+          🌿 Disease Scanner
+        </h1>
 
-      <div className="rounded-xl bg-white p-6 shadow">
-        <input type="file" accept="image/*" onChange={handleImage} />
+        <div className="rounded-xl bg-white p-6 shadow">
+          <input type="file" accept="image/*" onChange={handleImage} />
 
-        {image && (
-          <img
-            src={image}
-            alt="Leaf Preview"
-            className="mt-4 max-w-md rounded-lg border"
-          />
-        )}
+          {image && (
+            <img
+              src={image}
+              alt="Leaf Preview"
+              className="mt-4 max-w-md rounded-lg border"
+            />
+          )}
 
-        {saving && (
-          <p className="mt-3 text-sm text-green-700">
-            Saving diagnosis to database...
-          </p>
-        )}
+          {saving && (
+            <p className="mt-3 text-sm text-green-700">
+              Saving diagnosis to database...
+            </p>
+          )}
+        </div>
+
+        {showResult && <DiseaseResultCard />}
       </div>
-
-      {showResult && <DiseaseResultCard />}
-    </div>
+    </ProtectedRoute>
   );
 }
