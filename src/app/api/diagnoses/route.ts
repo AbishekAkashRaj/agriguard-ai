@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
 export async function GET() {
@@ -25,14 +25,16 @@ export async function GET() {
   }
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
+    const { diseaseName, confidence, severity, imageUrl } = await req.json();
+
     const diagnosis = await prisma.diagnosis.create({
       data: {
-        diseaseName: "Leaf Blight",
-        confidence: 92,
-        severity: "Medium",
-        imageUrl: null,
+        diseaseName,
+        confidence,
+        severity,
+        imageUrl: imageUrl || null,
       },
     });
 

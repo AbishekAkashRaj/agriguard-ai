@@ -4,29 +4,57 @@ import { useState } from "react";
 import ProtectedRoute from "@/components/auth/protected-route";
 import { DiseaseResultCard } from "@/components/scanner/disease-result-card";
 
+type DiagnosisResult = {
+  diseaseName: string;
+  confidence: number;
+  severity: string;
+  recommendation: string;
+};
+
 export default function ScanPage() {
   const [image, setImage] = useState<string | null>(null);
-  const [showResult, setShowResult] = useState(false);
-  const [saving, setSaving] = useState(false);
-
-  const saveDiagnosis = async () => {
-    setSaving(true);
-
-    await fetch("/api/diagnoses", {
-      method: "POST",
-    });
-
-    setSaving(false);
-  };
+  const [result, setResult] = useState<DiagnosisResult | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (file) {
-      setImage(URL.createObjectURL(file));
-      setShowResult(true);
-      await saveDiagnosis();
+    if (!file) return;
+
+    setImage(URL.createObjectURL(file));
+    setResult(null);
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch("/api/diagnose", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setResult({
+        diseaseName: data.diseaseName,
+        confidence: data.confidence,
+        severity: data.severity,
+        recommendation: data.recommendation,
+      });
+
+      await fetch("/api/diagnoses", {
+        method: "POST",
+        body: JSON.stringify({
+          diseaseName: data.diseaseName,
+          confidence: data.confidence,
+          severity: data.severity,
+          imageUrl: null,
+        }),
+      });
     }
+
+    setLoading(false);
   };
 
   return (
@@ -47,14 +75,21 @@ export default function ScanPage() {
             />
           )}
 
-          {saving && (
+          {loading && (
             <p className="mt-3 text-sm text-green-700">
-              Saving diagnosis to database...
+              Analyzing leaf image with AI...
             </p>
           )}
         </div>
 
-        {showResult && <DiseaseResultCard />}
+        {result && (
+          <DiseaseResultCard
+            diseaseName={result.diseaseName}
+            confidence={result.confidence}
+            severity={result.severity}
+            recommendation={result.recommendation}
+          />
+        )}
       </div>
     </ProtectedRoute>
   );
